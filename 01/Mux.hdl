@@ -3,12 +3,12 @@
 // by Nisan and Schocken, MIT Press.
 // File name: projects/01/Mux.hdl
 
-/** 
+/**
  * Multiplexor:
  * out = a if sel == 0
  *       b otherwise
  */
- /** 
+ /**
  * 数据选择器:
  * 当sel为0时 返回a的值
  * 否则返回b的值
