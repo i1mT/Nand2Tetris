@@ -8,6 +8,11 @@
  * out = 1 if (a == 1 or b == 1)
  *       0 otherwise
  */
+  /**
+ * 或门: 有一则一
+ * out = 1 if (a == 1 or b == 1)
+ *       0 otherwise
+ */
 
 CHIP Or {
     IN a, b;
@@ -15,7 +20,7 @@ CHIP Or {
 
     PARTS:
     // Put your code here:
-
+    //A+B = NOT(NOT(A)*NOT(B))
     Not(in=a, out=nota);
     Not(in=b, out=notb);
     And(a=nota, b=notb, out=midandnot);

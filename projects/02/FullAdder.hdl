@@ -5,8 +5,6 @@
 
 /**
  * Computes the sum of three bits.
- * Si = Ai⊕Bi⊕Ci-1 => (Ai ⊕ Bi) ⊕ Ci-1
- * Ci = (Ai*Bi) + Ci-1 * (Ai + Bi)
  */
 
 CHIP FullAdder {
@@ -16,12 +14,7 @@ CHIP FullAdder {
 
     PARTS:
     // Put you code here:
-    //计算sum
-    Xor(a=a, b=b, out=aXORb);
-    Xor(a=aXORb, b=c, out=sum);
-    //计算carry
-    And(a=a, b=b, out=left);
-    Or(a=a, b=b, out=aORb);
-    And(a=c, b=aORb, out=right);
-    Or(a=left, b=right, out=carry);
+    HalfAdder(a=a, b=b, sum=s1, carry=c1);
+    HalfAdder(a=s1, b=c, sum=sum, carry=c2);
+    Or(a=c1, b=c2, out=carry);
 }

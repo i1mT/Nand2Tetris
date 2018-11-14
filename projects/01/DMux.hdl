@@ -15,6 +15,10 @@ CHIP DMux {
 
     PARTS:
     // Put your code here:
+    /**
+     * 使用选择器即可
+     * 如下
+     */
     Mux(a=in, b=false, sel=sel, out=a);
     Mux(a=false, b=in, sel=sel, out=b);
 }

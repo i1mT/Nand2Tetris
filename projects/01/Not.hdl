@@ -8,6 +8,10 @@
  * out = not in
  */
 
+ /*
+  * 非门
+  */
+
 CHIP Not {
     IN in;
     OUT out;

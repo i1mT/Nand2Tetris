@@ -7,6 +7,10 @@
  * Exclusive-or gate:
  * out = not (a == b)
  */
+ /**
+ * 异或门: 输入相同为1 不同为0
+ * out = not (a == b)
+ */
 
 CHIP Xor {
     IN a, b;
@@ -14,7 +18,12 @@ CHIP Xor {
 
     PARTS:
     // Put your code here:
-    Or(a=a, b=b, out=orRes);
-    Nand(a=a, b=b, out=nandRes);
-    And(a=orRes, b=nandRes, out=out);
+    /*
+     * 实现
+     * AND(OR(A,B),NAND(A,B))
+     * 
+     */
+     Or(a=a, b=b, out=orRes);
+     Nand(a=a, b=b, out=nandRes);
+     And(a=orRes, b=nandRes, out=out);
 }
