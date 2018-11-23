@@ -1,5 +1,7 @@
 # 第二周
 
+![cover](http://upy.iimt.me/2018/11/15/upload_7761d8512a4515ef94836233e15b606e.png!/watermark/text/aWltdC5tZQ==/font/helvetica/align/southeast//color/ffffff/opacity/80/size/28/border/33333333)
+
 # 符号
 
 1. \+ => 或
@@ -82,15 +84,20 @@ Add16(a=in, b[0]=true, out=out);
 
   1. x
   2. y
-  3. zx
+  3. zx
   4. nx
   5. zy
   6. ny
   7. f
   8. no
 
-其中xy就是要计算的两个值，zx与nx对x进行预处理，zy与ny对y进行预处理，之后根据f的值对处理后的x与y进行计算：
-  1. f = 1，计算Or(x, y)
+其中xy就是要计算的两个值，zx与nx对x进行预处理，zy与ny对y进行预处理：
+  1. zx就是x=0
+  2. nx就是x=!x
+  3. 类同zy与ny
+
+之后根据f的值对处理后的x与y进行计算：
+  1. f = 1，计算Add(x, y)
   2. f = 0，计算And(x, y)
 
 最后no处理输出，如果no=1，输出就是Not(上面计算的结果)，否则就直接输出结果。
@@ -100,5 +107,89 @@ Add16(a=in, b[0]=true, out=out);
   2. zr 如果out = 0，就zr = 1，否则zr = 0
   3. ng 如果out < 0，就ng = 1，否则ng = 0
 
+具体思路就是：
 
+#### 第一步，预处理
+
+对于zx，有
+```
+if(zx == 1) {
+  x = 0
+} else {
+  x = x //也就是不变
+}
+```
+对于这样的选择分支，我们前面已经有一个门了，Mux选择器，用它来实现上面的语句就是：
+```
+Mux16(a=x, b=false, sel=zx, out=x1); //a是一个16位的二进制数，最后得到的结果是x1
+```
+
+然后用同样的方法根据zy对y预处理。
+
+预处理nx与ny则按照下面方法：
+
+假设通过zx与zy已经得到了预处理后的x1，y1，现在我们先计算出not(x1)与not(y1)，然后再用选择器选择到底用不用not之后的值。
+
+```
+Not16(in=x1, out=notx);
+Mux16(a=x1, b=notx, sel=nx, out=x2);
+Not16(in=y1, out=noty);
+Mux16(a=y1, b=noty, sel=ny, out=y2);
+```
+
+这样预处理就结束了。得到了预处理之后的x2与y2，然后进行下一步：计算
+
+#### 第二步，计算
+
+计算也是一个分支结构，也用Mux就可以了：
+
+```
+Add16(a=x2, b=y2, out=addxy);
+And16(a=x2, b=y2, out=andxy);
+Mux16(a=andxy, b=addxy, sel=f, out=outf);
+```
+
+然后是否要对计算结果取反就不多写了，还要注意的一个地方就是，判定out=1还是out<0:
+
+判定out=1，只需要用Or16，结果是1那么out=1，否则out!=1，然后根据结果输出zr就OK。
+判定out<0，额外添加了一个门用来判定一个16位二进制数是否小于0：
+
+在02文件夹下新建IsNeg16.hdl 代码如下：
+
+![isNeg16](http://upy.iimt.me/2018/11/15/upload_8c89cc07f003d31806433e5fba9ff0ef.png!/watermark/text/aWltdC5tZQ==/font/helvetica/align/southeast//color/ffffff/opacity/80/size/28/border/33333333)
+
+然后在ALU中调用IsNeg16就能判断是不是小于0了，之后用Mux选择器输出合适的ng就好了。
+
+
+# 结语
+
+这是Nand2Tetris的第二周，这一周实现了半加器，全加器，增量器，16位加法器，算术逻辑单元。
+
+
+## 这是啥?
+这是一个由希伯来大学的 Shimon Schocken与 Noam Nisan讲授的课程。
+教你从最简单的与非门实现计算机，并在计算机上实现操作系统，最后在构建的计算机上完成俄罗斯方块的制作。
+
+官网主页：[http://www.nand2tetris.org](http://www.nand2tetris.org)
+
+Coursera课程主页：[https://www.coursera.org/learn/build-a-computer](https://www.coursera.org/learn/build-a-computer)
+
+我将它的视频课程搬运到了B站，方便大家学习：[https://space.bilibili.com/69824765/#/channel/detail?cid=56426](https://space.bilibili.com/69824765/#/channel/detail?cid=56426)
+
+如果能科学上网的话，也可以在youtube搜索Nand2Tetris。
+
+
+## 你是谁？
+
+我是iimT，大学生，技术宅，计算机科技爱好者，电音小王子。
+
+我的博客：[www.iimt.me](http://www.iimt.me)
+
+我在Weibo：@_iimT
+
+我在B站：[https://space.bilibili.com/69824765/#/](https://space.bilibili.com/69824765/#/)
+
+**想看到我的更多更新的话，很乐意你关注我！**
+
+下一篇见~
 
