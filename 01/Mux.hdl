@@ -1,0 +1,32 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/01/Mux.hdl
+
+/**
+ * Multiplexor:
+ * out = a if sel == 0
+ *       b otherwise
+ */
+ /**
+ * 数据选择器:
+ * 当sel为0时 返回a的值
+ * 否则返回b的值
+ */
+
+CHIP Mux {
+    IN a, b, sel;
+    OUT out;
+
+    PARTS:
+    // Put your code here:
+    /*
+     * 画卡诺图化简
+     * 得到公式 OR( AND(NOT(S), A), AND(S, B))
+     * 即 (NOT S)*A + S*B
+     */
+     Not(in=sel, out=notSel);
+     And(a=notSel, b=a, out=notAandSel);
+     And(a=sel, b=b, out=selAndB);
+     Or (a=notAandSel, b=selAndB, out=out);
+}
